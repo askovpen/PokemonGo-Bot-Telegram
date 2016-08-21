@@ -65,6 +65,7 @@ def parse_stats(inv):
       return item["inventory_item_data"]["player_stats"]
   return None
 def main():
+  logger.info("Bot started. Enjoy!")
   bot.polling()
 
 
