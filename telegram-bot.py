@@ -9,6 +9,7 @@ import telebot
 logging.basicConfig(
   level=logging.INFO,
   format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
+logging.getLogger("requests").setLevel(logging.ERROR)
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
@@ -48,7 +49,6 @@ def send_info(name,message):
 @bot.message_handler(commands=['info'])
 def get_info(message):
   logger.info('"'+message.text+'" from ['+str(message.from_user.id)+'] '+message.from_user.first_name+" "+message.from_user.last_name+" ("+message.from_user.username+")")
-  logger.info('info')
   sp=message.text.split(' ')
   if len(sp)>1:
     if sp[1] in config.bots:
