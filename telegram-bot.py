@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 import config
 import json
@@ -32,12 +32,16 @@ def send_info(name,message):
     result=(
       "*"+name+"*:",
       "_Level:_ "+str(stats["level"]),
-      "_XP:_ "+str(stats["next_level_xp"]-stats["experience"])+"/"+str(stats["next_level_xp"]-stats["prev_level_xp"]),
+      "_XP:_ "+str(stats["experience"]-stats["prev_level_xp"])+"/"+str(stats["next_level_xp"]-stats["prev_level_xp"]),
       "_Pokemons Captured:_ "+str(stats["pokemons_captured"]),
       "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"]),
       "_KM Walked:_ "+str(stats["km_walked"])
     )
     bot.send_message(message.from_user.id, "\n".join(result),parse_mode="Markdown")
+    with open(os.path.join(config.bot_path+"/web","location-"+name+".json")) as f:
+      loc=json.load(f)
+    bot.send_location(message.from_user.id,loc["lat"],loc["lng"])
+
   except IOError as e:
     logging.error("I/O error: "+str(e))
 
