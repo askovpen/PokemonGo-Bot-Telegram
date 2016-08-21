@@ -1,0 +1,3 @@
+token = "" # Telegram API Token
+bot_path="/path/to/PokemonGo-Bot"
+bots=["botname1","botname2"]
