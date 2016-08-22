@@ -15,6 +15,7 @@ logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
 bot = telebot.TeleBot(config.token)
+levelXpArray=[]
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
@@ -26,6 +27,7 @@ def send_welcome(message):
   bot.send_message(message.from_user.id, "\n".join(result))
 
 def send_info(name,message):
+  global leveXpArray
   inv=[]
   try:
     with open(os.path.join(config.bot_path+"/web","inventory-"+name+".json")) as f:
@@ -41,7 +43,7 @@ def send_info(name,message):
     result=(
       "*"+name+"*:",
       "_Level:_ "+str(stats["level"]),
-      "_XP:_ "+str(stats["experience"]-stats["prev_level_xp"])+"/"+str(stats["next_level_xp"]-stats["prev_level_xp"]),
+      "_XP:_ "+str(stats["experience"]-levelXpArray[stats["level"]-1]["current_level_xp"])+"/"+str(levelXpArray[stats["level"]-1]["exp_to_next_level"]),
       "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _today_)",
       "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _today_)",
       "_KM Walked:_ "+str(stats["km_walked"])
@@ -72,7 +74,11 @@ def parse_stats(inv):
     if "player_stats" in item["inventory_item_data"]:
       return item["inventory_item_data"]["player_stats"]
   return None
+
 def main():
+  global levelXpArray
+  with open(config.bot_path+"/web/data/levelXp.json") as f:
+    levelXpArray=json.load(f)
   logger.info("Bot started. Enjoy!")
   bot.polling()
 
