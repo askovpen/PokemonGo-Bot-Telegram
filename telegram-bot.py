@@ -42,7 +42,7 @@ def send_info(name,message):
       "*"+name+"*:",
       "_Level:_ "+str(stats["level"]),
       "_XP:_ "+str(stats["experience"]-stats["prev_level_xp"])+"/"+str(stats["next_level_xp"]-stats["prev_level_xp"]),
-      "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+") _today_",
+      "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _today_)",
       "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _today_)",
       "_KM Walked:_ "+str(stats["km_walked"])
     )
