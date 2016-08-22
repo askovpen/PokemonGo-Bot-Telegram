@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import telebot
+import sqlite3
 
 logging.basicConfig(
   level=logging.INFO,
@@ -30,12 +31,19 @@ def send_info(name,message):
     with open(os.path.join(config.bot_path+"/web","inventory-"+name+".json")) as f:
       inv=json.load(f)
     stats=parse_stats(inv)
+    conn=sqlite3.connect(os.path.join(config.bot_path+"/data",name+".db"))
+    cur = conn.cursor()
+    cur.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
+    catch_day=cur.fetchone()[0]
+    cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
+    ps_day=cur.fetchone()[0]
+    conn.close()
     result=(
       "*"+name+"*:",
       "_Level:_ "+str(stats["level"]),
       "_XP:_ "+str(stats["experience"]-stats["prev_level_xp"])+"/"+str(stats["next_level_xp"]-stats["prev_level_xp"]),
-      "_Pokemons Captured:_ "+str(stats["pokemons_captured"]),
-      "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"]),
+      "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+") _today_",
+      "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _today_)",
       "_KM Walked:_ "+str(stats["km_walked"])
     )
     bot.send_message(message.from_user.id, "\n".join(result),parse_mode="Markdown")
